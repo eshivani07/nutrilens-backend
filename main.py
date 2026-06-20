@@ -4,11 +4,15 @@ app = FastAPI()
 
 @app.get("/")
 def home():
-    return {"message": "NutriLens Backend Running"}
+    return {
+        "message": "NutriLens Backend Running"
+    }
 
 @app.get("/test")
 def test():
-    return {"status": "success"}
+    return {
+        "status": "success"
+    }
 
 @app.post("/analyze")
 async def analyze(image: UploadFile = File(...)):
