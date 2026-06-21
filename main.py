@@ -25,34 +25,38 @@ def test():
 @app.post("/analyze")
 async def analyze(file: UploadFile = File(...)):
     try:
+        print("Analyze endpoint hit")
 
         contents = await file.read()
 
-        image = Image.open(
-            io.BytesIO(contents)
-        )
+        print(f"Image size: {len(contents)} bytes")
+
+        image = Image.open(io.BytesIO(contents))
 
         prompt = """
-        Analyze this food product label.
+        Analyze this food label.
 
         Return:
         - Product Name
         - Ingredients
         - Nutrition Information
-        - Health Score (0-100)
+        - Health Score
         - Warnings
-        - Healthier Alternatives
-
-        Keep the response concise.
         """
 
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=[
-                image,
-                prompt
+                prompt,
+                image
             ]
         )
+
+        print("Gemini response:")
+        print(response)
+
+        print("Response text:")
+        print(response.text)
 
         return {
             "status": "success",
@@ -60,6 +64,9 @@ async def analyze(file: UploadFile = File(...)):
         }
 
     except Exception as e:
+        print("ERROR:")
+        print(str(e))
+
         return {
             "status": "error",
             "message": str(e)
